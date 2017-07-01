@@ -3,6 +3,9 @@
 
 ## 主要练习使用了如下组件
 relativeLayout
+
 RecyclerView
+
 SharedPreferences
+
 Implicit and expliit Intent
