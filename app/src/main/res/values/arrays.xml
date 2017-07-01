@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="pref_photo_labels">
+        <item>@string/string_label1</item>
+        <item>@string/string_label2</item>
+        <item>@string/string_label3</item>
+    </array>
+    
+    <array name="pref_photo_values">
+        <item>@string/string_name1</item>
+        <item>@string/string_name2</item>
+        <item>@string/string_name3</item>
+    </array>
+
+    <array name="pref_photo_rig">
+        <item>@string/string_label1_rig</item>
+        <item>@string/string_label2_rig</item>
+        <item>@string/string_label3_rig</item>
+    </array>
+
+    <array name="pref_photo">
+        <item>@string/string_name1_rig</item>
+        <item>@string/string_name2_rig</item>
+        <item>@string/string_name3_rig</item>
+
+    </array>
+
+
+</resources>

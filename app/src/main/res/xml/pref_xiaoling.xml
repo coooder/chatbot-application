@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ListPreference
+        android:icon="@drawable/icon_1"
+        android:title="更换小灵的头像"
+        android:defaultValue="@string/string_name1"
+        android:entries="@array/pref_photo_labels"
+        android:entryValues="@array/pref_photo_values"
+        android:key="@string/key"/>
+
+    <ListPreference
+        android:icon="@drawable/icon_2"
+        android:title="更换您的头像"
+        android:defaultValue="@string/string_name1_rig"
+        android:entries="@array/pref_photo_rig"
+        android:entryValues="@array/pref_photo"
+        android:key="@string/key_right"/>
+
+
+</PreferenceScreen>

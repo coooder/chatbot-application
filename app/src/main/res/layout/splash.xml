@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#a72294ec">
+
+    <ImageView
+        android:id="@+id/spalsh_screen_png"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleType="fitCenter"
+        android:src="@drawable/splash1"
+        android:scaleX="1.2"
+        android:paddingTop="150dp"
+        android:paddingRight="40dp"
+        android:paddingLeft="60dp"/>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="小灵机器人"
+        android:layout_below="@+id/spalsh_screen_png"
+        android:gravity="center"
+        android:textSize="30sp"
+        android:paddingTop="40sp"
+        android:paddingLeft="110dp"
+        android:textColor="#ffffff"/>
+
+</RelativeLayout>
