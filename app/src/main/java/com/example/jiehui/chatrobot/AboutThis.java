@@ -9,6 +9,7 @@ public class AboutThis extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about_this);
-        getSupportActionBar().setTitle(R.string.About);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setTitle(R.string.About);
     }
 }

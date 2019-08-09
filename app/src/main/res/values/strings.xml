@@ -32,15 +32,15 @@
     <string name="string_name1">小灵真身</string>
     <string name="string_name2">绝世美女</string>
     <string name="string_name3">少女</string>
-    <string name="string_name1_rig">选择一</string>
-    <string name="string_name2_rig">选择二</string>
-    <string name="string_name3_rig">选择三</string>
+    <string name="string_name1_right">选择一</string>
+    <string name="string_name2_right">选择二</string>
+    <string name="string_name3_right">选择三</string>
     <string name="string_label1">美女形象</string>
     <string name="string_label2">帅哥形象</string>
     <string name="string_label3">卡通形象</string>
-    <string name="string_label1_rig">男神</string>
-    <string name="string_label2_rig">女神</string>
-    <string name="string_label3_rig">卡通</string>
+    <string name="string_label1_right">男神</string>
+    <string name="string_label2_right">女神</string>
+    <string name="string_label3_right">卡通</string>
     <string name="key">image</string>
     <string name="key_right">key</string>
 

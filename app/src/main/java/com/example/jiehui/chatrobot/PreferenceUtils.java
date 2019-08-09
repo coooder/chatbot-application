@@ -23,7 +23,7 @@ public class PreferenceUtils {
         } else {
             getSharedPreferences(context);
         }
-        sharedPreferences.edit().putString(key,value).commit();
+        sharedPreferences.edit().putString(key,value).apply();
     }
 
     public static String getString(Context context,String key,String defValue){

@@ -14,15 +14,15 @@
     </array>
 
     <array name="pref_photo_rig">
-        <item>@string/string_label1_rig</item>
-        <item>@string/string_label2_rig</item>
-        <item>@string/string_label3_rig</item>
+        <item>@string/string_label1_right</item>
+        <item>@string/string_label2_right</item>
+        <item>@string/string_label3_right</item>
     </array>
 
     <array name="pref_photo">
-        <item>@string/string_name1_rig</item>
-        <item>@string/string_name2_rig</item>
-        <item>@string/string_name3_rig</item>
+        <item>@string/string_name1_right</item>
+        <item>@string/string_name2_right</item>
+        <item>@string/string_name3_right</item>
 
     </array>
 

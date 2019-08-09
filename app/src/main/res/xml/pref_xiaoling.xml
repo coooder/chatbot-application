@@ -13,7 +13,7 @@
     <ListPreference
         android:icon="@drawable/icon_2"
         android:title="更换您的头像"
-        android:defaultValue="@string/string_name1_rig"
+        android:defaultValue="@string/string_name1_right"
         android:entries="@array/pref_photo_rig"
         android:entryValues="@array/pref_photo"
         android:key="@string/key_right"/>

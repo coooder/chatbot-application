@@ -1,7 +1,5 @@
 package com.example.jiehui.chatrobot;
 
-import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -13,12 +11,12 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,10 +25,11 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,7 +39,13 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener,NavigationView.OnNavigationItemSelectedListener,
+import rx.Observer;
+import rx.Scheduler;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
         SharedPreferences.OnSharedPreferenceChangeListener{
 
 
@@ -58,15 +63,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private Button button;
 
-    private List<ListData> list;
+    private static List<ListData> list;
 
-    private RecyclerView recyclerView;
+    private static RecyclerView recyclerView;
 
-    private RecyclerViewAdapter recyclerViewAdapter;
+    private static RecyclerViewAdapter recyclerViewAdapter;
 
     private String[] welcome_array;
 
     private String content_str;
+
+    private String key = "62e81e7de14044dca3b10799cb0cce55";
+
+    private Subscription subscription;
+
+    private Gson gson;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,23 +94,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         RelativeLayout relativeLayout = (RelativeLayout) LayoutInflater.from(this).inflate(R.layout.leftitem,null);
         imageView = (ImageView) relativeLayout.findViewById(R.id.image_left);
-        //relativeLayout.setVisibility(View.INVISIBLE);
-        //imageView.setVisibility(View.INVISIBLE);
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        gson = new GsonBuilder().create();
         toolbar.setTitle(R.string.app_title);
         setSupportActionBar(toolbar);
         actionBarDrawerToggle =  new ActionBarDrawerToggle(this,drawerLayout,R.string.Open,R.string.Close);
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         editText = (EditText) findViewById(R.id.edit_queryApi);
         button = (Button) findViewById(R.id.button_send);
         recyclerView = (RecyclerView) findViewById(R.id.list_item);
 
         list = new ArrayList<ListData>();
-        button.setOnClickListener(this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(layoutManager);
@@ -107,11 +117,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerViewAdapter = new RecyclerViewAdapter(this,list);
         recyclerView.setAdapter(recyclerViewAdapter);
-        ListData listData = new ListData(getWelcomeTips(),ListData.RECEIVER);
+        ListData listData = new ListData(getWelcomeTips());
+        listData.setFlag(ListData.RECEIVER);
         recyclerViewAdapter.addMessage(listData);
-       // imageView.setImageResource(R.mipmap.ic_pretty);
-        //imageView.invalidate();
 
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                content_str = editText.getText().toString();
+                Log.i("text","string length is: " + content_str.length());
+                if (content_str.trim().isEmpty()) {
+                    editText.setText("");
+                    return;
+                }
+                editText.setText("");
+                ListData listData = new ListData(content_str);
+                listData.setFlag(ListData.SEND);
+                list.add(listData);
+                recyclerViewAdapter.notifyDataSetChanged();
+                recyclerView.scrollToPosition(list.size()-1);
+                getChatMessage(content_str);
+
+            }
+        });
     }
 
     private void setUpSharedPreference(){
@@ -129,18 +157,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else if(str.equals(getString(R.string.string_name3))){
             PreferenceUtils.putString(this,getString(R.string.key),getString(R.string.string_name3));
         }
-
         recyclerView.setAdapter(recyclerViewAdapter);
         recyclerViewAdapter.notifyDataSetChanged();
     }
 
     private void loadImageFromPreference_right(String str){
-        if(str.equals(getString(R.string.string_name1_rig))){
-            PreferenceUtils.putString(this,getString(R.string.key_right),getString(R.string.string_name1_rig));
-        } else if(str.equals(getString(R.string.string_name2_rig)) ){
-            PreferenceUtils.putString(this,getString(R.string.key_right),getString(R.string.string_name2_rig));
-        } else if(str.equals(getString(R.string.string_name3_rig))){
-            PreferenceUtils.putString(this,getString(R.string.key_right),getString(R.string.string_name3_rig));
+        if(str.equals(getString(R.string.string_name1_right))){
+            PreferenceUtils.putString(this,getString(R.string.key_right),getString(R.string.string_name1_right));
+        } else if(str.equals(getString(R.string.string_name2_right)) ){
+            PreferenceUtils.putString(this,getString(R.string.key_right),getString(R.string.string_name2_right));
+        } else if(str.equals(getString(R.string.string_name3_right))){
+            PreferenceUtils.putString(this,getString(R.string.key_right),getString(R.string.string_name3_right));
         }
 
         recyclerView.setAdapter(recyclerViewAdapter);
@@ -154,18 +181,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int index = (int) (Math.random()*(welcome.length-1));
         String word = welcome[index];
         return word;
-    }
-
-    @Override
-    public void onClick(View v) {
-        content_str = editText.getText().toString();
-        editText.setText("");
-        URL url = NetworkUtils.buildUrl(content_str);
-        ListData listData = new ListData(content_str,ListData.SEND);
-        list.add(listData);
-        new tuLingQueryTask().execute(url);
-        recyclerViewAdapter.notifyDataSetChanged();
-        recyclerView.scrollToPosition(list.size()-1);
     }
 
     @Override
@@ -220,7 +235,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             loadImageFromPreference_left(sharedPreferences.getString(getString(R.string.key),getString(R.string.string_name1)));
         }
         if(key.equals(getString(R.string.key_right))){
-            loadImageFromPreference_right(sharedPreferences.getString(getString(R.string.key_right),getString(R.string.string_name1_rig)));
+            loadImageFromPreference_right(sharedPreferences.getString(getString(R.string.key_right),getString(R.string.string_name1_right)));
         }
 
     }
@@ -230,42 +245,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onDestroy();
         PreferenceManager.getDefaultSharedPreferences(this).
                 unregisterOnSharedPreferenceChangeListener(this);
-    }
-
-
-    public class tuLingQueryTask extends AsyncTask<URL,Void,String>{
-
-        @Override
-        protected String doInBackground(URL... params) {
-            URL searchUrl = params[0];
-            String tulingSearchResult = null;
-            try{
-                tulingSearchResult = NetworkUtils.getResponseFromHttp(searchUrl);
-            } catch (IOException e){
-                e.printStackTrace();
-            }
-            return tulingSearchResult;
-        }
-
-
-        @Override
-        protected void onPostExecute(String s) {
-            if(s !=null && !s.equals("")){
-                try {
-                    JSONObject jsonObject = new JSONObject(s);
-                    String json_str = jsonObject.getString("text");
-                    ListData listData = new ListData(json_str,ListData.RECEIVER);
-                    list.add(listData);
-                    recyclerViewAdapter.notifyDataSetChanged();
-                    recyclerView.scrollToPosition(list.size()-1);
-
-                } catch (JSONException e){
-                    e.printStackTrace();
-                }
-
-            }
+        if (subscription != null && !subscription.isUnsubscribed()) {
+            subscription.unsubscribe();
         }
     }
 
+    public void getChatMessage(String text) {
+        subscription = new NetworkUtils().getTuLingChat(key, text)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<ListData>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.i("TAG", "In onCompleted()");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        Log.i("TAG", "something is wrong");
+                    }
+
+                    @Override
+                    public void onNext(ListData listData) {
+                        listData.setFlag(ListData.RECEIVER);
+                        recyclerViewAdapter.addMessage(listData);
+                        recyclerViewAdapter.notifyDataSetChanged();
+                        recyclerView.scrollToPosition(list.size()-1);
+                    }
+                });
+    }
 
 }

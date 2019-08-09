@@ -18,7 +18,7 @@ import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private List<ListData> lists = new ArrayList<>();
+    private List<ListData> lists;
 
     private Context context;
 
@@ -31,7 +31,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public RecyclerViewAdapter(Context context, List<ListData> lists){
         this.context = context;
         this.lists = lists;
-        inflater = LayoutInflater.from(context);
+        this.inflater = LayoutInflater.from(context);
     }
 
 
@@ -47,8 +47,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if(viewType == 0){
-            relativeLayout = (RelativeLayout) LayoutInflater.from(context)
-                    .inflate(R.layout.leftitem,parent,false);
+            relativeLayout = (RelativeLayout) inflater
+                    .inflate(R.layout.leftitem, parent,false);
             ImageView imageView = (ImageView) relativeLayout.findViewById(R.id.image_left);
             String string = PreferenceUtils.getString(context,"image","");
             if(string.equals("")){}
@@ -94,16 +94,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         if(holder instanceof LeftHolder){
             LeftHolder leftHolder = (LeftHolder) holder;
             if(lists != null){
-                ((LeftHolder) holder).LeftMessage.setText(lists.get(position).getContent());
+                leftHolder.LeftMessage.setText(lists.get(position).getContent());
             }
 
         } else if(holder instanceof RightHolder){
             RightHolder rightHolder = (RightHolder) holder;
             if(lists != null){
-                ((RightHolder) holder).RightMessage.setText(lists.get(position).getContent());
+                rightHolder.RightMessage.setText(lists.get(position).getContent());
             }
         }
-
     }
 
     @Override
@@ -141,6 +140,5 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             RightMessage = (TextView) itemView.findViewById(R.id.tv_right_message);
         }
     }
-
 
 }

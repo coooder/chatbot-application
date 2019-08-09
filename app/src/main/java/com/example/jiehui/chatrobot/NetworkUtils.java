@@ -1,66 +1,35 @@
 package com.example.jiehui.chatrobot;
 
-import android.net.Uri;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Scanner;
+import java.util.List;
+
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
+import rx.Observable;
 
 /**
  * Created by jiehui on 6/6/17.
  */
 
 public class NetworkUtils {
-    private static final String Base_Url = "http://www.tuling123.com/openapi/api";
-
-    private static final String ParamOne = "key";
-
-    private static final String ParamTwo = "info";
+    private static final String Base_Url = "http://www.tuling123.com";
+    private ChatService chatService;
 
 
-
-
-    public static URL buildUrl(String tulingSearchQuery){
-        Uri builtUri = Uri.parse(Base_Url).buildUpon()
-                .appendQueryParameter(ParamOne,"62e81e7de14044dca3b10799cb0cce55")
-                .appendQueryParameter(ParamTwo,tulingSearchQuery)
+    public NetworkUtils() {
+        final Gson gson = new GsonBuilder().create();
+        final Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Base_Url)
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
-
-
-        URL url = null;
-        try {
-            url = new URL(builtUri.toString());
-        } catch (MalformedURLException e){
-            e.printStackTrace();
-        }
-
-        return url;
+        chatService = retrofit.create(ChatService.class);
     }
 
-    public static String getResponseFromHttp(URL url) throws IOException {
-        HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-        try{
-            httpURLConnection.setRequestMethod("POST");
-            InputStream in = httpURLConnection.getInputStream();
-            Scanner scanner = new Scanner(in);
-            scanner.useDelimiter("\\A");
-
-            boolean hasInput = scanner.hasNext();
-            if(hasInput){
-                return scanner.next();
-
-            }else {
-                return null;
-            }
-
-        } finally {
-            httpURLConnection.disconnect();
-        }
-
+    public Observable<ListData> getTuLingChat(String key, String text) {
+        return chatService.getTuLingChat(key, text);
     }
-
-
 }

@@ -2,20 +2,20 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
 
-        <item
-            android:id="@+id/nav_Robphoto"
-            android:icon="@drawable/ic_face_robot_24dp"
-            android:title="@string/change_robot_image" />
+    <item
+        android:id="@+id/nav_Robphoto"
+        android:icon="@drawable/ic_face_robot_24dp"
+        android:title="@string/change_robot_image" />
 
-        <item
-            android:id="@+id/nav_about"
-            android:icon="@drawable/ic_voicemail_black_24dp"
-            android:title="@string/about_this" />
+    <item
+        android:id="@+id/nav_about"
+        android:icon="@drawable/ic_voicemail_black_24dp"
+        android:title="@string/about_this" />
 
-        <item
-            android:id="@+id/nav_share"
-            android:icon="@drawable/ic_menu_share"
-            android:title="@string/sharing" />
+    <item
+        android:id="@+id/nav_share"
+        android:icon="@drawable/ic_menu_share"
+        android:title="@string/sharing" />
 
 
 </menu>

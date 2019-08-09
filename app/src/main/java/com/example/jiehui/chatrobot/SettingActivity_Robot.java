@@ -9,6 +9,7 @@ public class SettingActivity_Robot extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting__robot);
-        getSupportActionBar().setTitle(R.string.setting_robot);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setTitle(R.string.setting_robot);
     }
 }

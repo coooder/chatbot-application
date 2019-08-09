@@ -1,31 +1,25 @@
 package com.example.jiehui.chatrobot;
 
-/**
- * Created by jiehui on 6/6/17.
- */
-
 public class ListData {
 
     public static final int SEND = 1;
 
     public static final int RECEIVER = 2;
 
-    private String content;
+    private String text;
 
     private int flag;
 
-    public ListData(String content,int flag) {
-        setContent(content);
-        setFlag(flag);
-
+    public ListData(String text) {
+        setContent(text);
     }
 
     public String getContent() {
-        return content;
+        return text;
     }
 
     public void setContent(String content) {
-        this.content = content;
+        this.text = content;
     }
 
     public int getFlag() {
@@ -35,6 +29,4 @@ public class ListData {
     public void setFlag(int flag) {
         this.flag = flag;
     }
-
-
 }
